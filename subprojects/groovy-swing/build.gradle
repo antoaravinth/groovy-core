@@ -7,5 +7,3 @@ task moduleDescriptor(type: org.codehaus.groovy.gradle.WriteExtensionDescriptorT
     extensionClasses = 'org.codehaus.groovy.runtime.SwingGroovyMethods'
 }
 compileJava.dependsOn moduleDescriptor
-
-apply from: "${rootProject.projectDir}/gradle/jacoco/jacocofix.gradle"

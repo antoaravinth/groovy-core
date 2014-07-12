@@ -26,6 +26,5 @@ public enum StaticCompilationMetadataKeys {
     PRIVATE_BRIDGE_METHODS, // private bridge methods are methods used by an outer class to access an inner class method
     PRIVATE_FIELDS_ACCESSORS, // private constants methods are methods used by an outer class to access an outer class constant
     PROPERTY_OWNER, // the type of the class which owns the property
-    COMPONENT_TYPE, // for list.property expressions, we need the inferred component type
-    RECEIVER_OF_DYNAMIC_PROPERTY // if a receiver is the receiver of a dynamic property (for mixed mode compilation)
+    COMPONENT_TYPE // for list.property expressions, we need the inferred component type
 }
