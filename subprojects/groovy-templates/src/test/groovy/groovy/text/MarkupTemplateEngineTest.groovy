@@ -20,6 +20,7 @@ import groovy.text.markup.BaseTemplate
 import groovy.text.markup.MarkupTemplateEngine
 import groovy.text.markup.TagLibAdapter
 import groovy.text.markup.TemplateConfiguration
+import groovy.transform.NotYetImplemented
 
 class MarkupTemplateEngineTest extends GroovyTestCase {
     private Locale locale
@@ -943,6 +944,67 @@ layout 'includes/body.tpl', bodyContents: contents {
         assert rendered == '<strong>error</strong><p>This is an </p>'
 
     }
+
+    // GROOVY-6935
+    void testShouldNotThrowVerifyErrorBecauseOfEqualsInsteadOfSemiColumn() {
+        MarkupTemplateEngine engine = new MarkupTemplateEngine(new TemplateConfiguration())
+
+        def template = engine.createTemplate '''
+            a(href='foo.html', 'link')
+        '''
+        try {
+            template.make().writeTo(new StringWriter())
+            assert false
+        } catch (UnsupportedOperationException e) {
+            assert true
+        }
+        def model = [:]
+        String rendered = template.make(model).writeTo(new StringWriter())
+        assert model.href == 'foo.html'
+        assert rendered == '<a>link</a>'
+    }
+
+    // GROOVY-6939
+    @NotYetImplemented
+    void testShouldNotFailWithDoCallMethod() {
+        MarkupTemplateEngine engine = new MarkupTemplateEngine(new TemplateConfiguration())
+
+        def template = engine.createTemplate '''
+            groups.each { k, v -> li(k) }
+        '''
+        def model = [groups:[a:'Group a',b:'Group b']]
+        String rendered = template.make(model)
+        assert rendered == '<li>a</li><li>b</li>'
+    }
+
+    // GROOVY-6940
+    @NotYetImplemented
+    void testSubscriptOperatorOnModel() {
+        MarkupTemplateEngine engine = new MarkupTemplateEngine(new TemplateConfiguration())
+
+        def template = engine.createTemplate '''
+            yield list[0]
+        '''
+        def model = [list:['Item 1']]
+        String rendered = template.make(model)
+        assert rendered == 'Item 1'
+
+    }
+
+    // GROOVY-6941
+    void testDynamicPropertyInsideBlock() {
+        MarkupTemplateEngine engine = new MarkupTemplateEngine(new TemplateConfiguration())
+        def template = engine.createTemplate '''
+        div {
+            yield xml.file.name
+        }
+        '''
+        def model = [xml: [file:[name:'test']]]
+        String rendered = template.make(model)
+        assert rendered == '<div>test</div>'
+
+    }
+
     class SimpleTagLib {
         def emoticon = { attrs, body ->
             out << body() << (attrs.happy == 'true' ? " :-)" : " :-(")
