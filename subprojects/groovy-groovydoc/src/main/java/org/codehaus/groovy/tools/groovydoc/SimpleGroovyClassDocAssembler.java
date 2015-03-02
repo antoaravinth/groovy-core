@@ -352,9 +352,7 @@ public class SimpleGroovyClassDocAssembler extends VisitorAdapter implements Gro
                 currentFieldDoc.setPublic(true);
             }
             if (defaultText != null) {
-
-                System.out.println("The default annotated filed is " + defaultText);
-
+                
                 currentFieldDoc.setConstantValueExpression(defaultText);
                 String orig = currentFieldDoc.getRawCommentText();
                 currentFieldDoc.setRawCommentText(orig + "\n* @default " + defaultText);
